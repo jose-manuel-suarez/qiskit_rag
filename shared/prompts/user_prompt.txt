@@ -1,0 +1,1 @@
+Analyze the Qiskit code snippet into the provided file for populate the expected markdown table with all detected refactoring scenarios. Do not add any explanation or extra information.
