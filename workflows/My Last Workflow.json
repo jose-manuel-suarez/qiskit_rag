@@ -168,7 +168,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Obtener el nombre del modelo del agente AI\nconst modelName = $('Globals').first().json['chat-bot-model'] || 'unknown-model';\n\n// Formatear fecha manualmente para mejor control\nconst now = new Date();\nconst year = now.getFullYear();\nconst month = String(now.getMonth() + 1).padStart(2, '0');\nconst day = String(now.getDate()).padStart(2, '0');\nconst hours = String(now.getHours()).padStart(2, '0');\nconst minutes = String(now.getMinutes()).padStart(2, '0');\nconst seconds = String(now.getSeconds()).padStart(2, '0');\nconst timeStamp = `${year}-${month}-${day}_${hours}:${minutes}:${seconds}`;\n\n// Usar path predeterminado si no está disponible en los datos\nconst answersPath = $('Globals').first()?.json?.['repo-github']?.['answers-path'] || '';\n\n// Procesar todos los items de entrada (snippets python)\nconst results = [];\nfor (const item of $input.all()) {\n  const newItem = {\n    json: {      \n      file_name: item.json.case.replace(/\\.py$/, '.md'),\n      path: `${answersPath}${timeStamp}-${modelName}/`,\n      timestamp: timeStamp,\n      result: item.json.result\n    }\n  };\n  results.push(newItem);\n}\nreturn results;"
+        "jsCode": "// Obtener el nombre del modelo del agente AI\nconst modelName = $('Globals').first().json['chat-bot-model'] || 'unknown-model';\n\n// Formatear fecha manualmente para mejor control\nconst now = new Date();\nconst year = now.getFullYear();\nconst month = String(now.getMonth() + 1).padStart(2, '0');\nconst day = String(now.getDate()).padStart(2, '0');\nconst hours = String(now.getHours()).padStart(2, '0');\nconst minutes = String(now.getMinutes()).padStart(2, '0');\nconst seconds = String(now.getSeconds()).padStart(2, '0');\nconst timeStamp = `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;\n\n// Usar path predeterminado si no está disponible en los datos\nconst answersPath = $('Globals').first()?.json?.['repo-github']?.['answers-path'] || '';\n\n// Procesar todos los items de entrada (snippets python)\nconst results = [];\nfor (const item of $input.all()) {\n  const newItem = {\n    json: {      \n      file_name: item.json.case.replace(/\\.py$/, '.md'),\n      path: `${answersPath}${timeStamp}-${modelName}/`,\n      timestamp: timeStamp,\n      result: item.json.result\n    }\n  };\n  results.push(newItem);\n}\nreturn results;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1482,7 +1482,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "74b779e5-2ac7-415c-83ea-6ea0ccee325c",
+  "versionId": "ecf196f9-3376-4401-80e5-7d83699dc5e4",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "558d88703fb65b2d0e44613bc35916258b0f0bf983c5d4730c00c424b77ca36a"
