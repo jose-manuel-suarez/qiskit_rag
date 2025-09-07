@@ -1,0 +1,1492 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "mode": "insert",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "rag_ddbb",
+          "mode": "id"
+        },
+        "embeddingBatchSize": 50,
+        "options": {}
+      },
+      "id": "7bc08817-5ec7-4574-8ed6-3cfd7a2e1bd5",
+      "name": "Qdrant Vector Store",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "position": [
+        912,
+        128
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "qdrantApi": {
+          "id": "sFfERYppMeBnFNeA",
+          "name": "Local QdrantApi database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "nomic-embed-text:v1.5"
+      },
+      "id": "28ed9b4d-cbc1-4c09-9738-c617c62d92ea",
+      "name": "Embeddings Ollama",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "position": [
+        832,
+        336
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "ollamaApi": {
+          "id": "xHuYe0MDGOs9IpBW",
+          "name": "Local Ollama service"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "options": {}
+      },
+      "id": "9b253990-0ed8-4cf0-8714-dc02af6a3588",
+      "name": "Default Data Loader",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "position": [
+        976,
+        336
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "# Data Ingestion\n## Add data to the semantic database",
+        "height": 892,
+        "width": 1832,
+        "color": 4
+      },
+      "id": "601a3594-d6bf-4875-8997-39a20be662ea",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -544,
+        64
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.user_prompt }}",
+        "options": {
+          "systemMessage": "={{ $json.system_prompt }}"
+        }
+      },
+      "id": "d783bf90-1f10-4eeb-aef4-e6bd944755d6",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        3280,
+        720
+      ],
+      "typeVersion": 2,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "data",
+        "toolDescription": "Retrieve data from a semantic database to answer questions",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "rag_ddbb",
+          "mode": "id"
+        },
+        "topK": 5,
+        "includeDocumentMetadata": false,
+        "options": {}
+      },
+      "id": "e4bab291-823c-4b8c-b607-73dc7ffa6f39",
+      "name": "Qdrant Vector Store1",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "position": [
+        3520,
+        1008
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "qdrantApi": {
+          "id": "sFfERYppMeBnFNeA",
+          "name": "Local QdrantApi database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "nomic-embed-text:v1.5"
+      },
+      "id": "ed840c1e-a79c-41f7-9771-4dfa86a2cc22",
+      "name": "Embeddings Ollama1",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "position": [
+        3520,
+        1168
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "ollamaApi": {
+          "id": "xHuYe0MDGOs9IpBW",
+          "name": "Local Ollama service"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@bitovi/n8n-nodes-semantic-text-splitter.semanticTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        896,
+        528
+      ],
+      "id": "fcd8dc9d-b15e-4d3a-8475-2262305d61ff",
+      "name": "Semantic Text Splitter1"
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  if (item.binary && item.binary.data) {\n    // Cambiar el mimeType\n    item.binary.data.mimeType = 'text/plain';\n\n    // Cambiar el nombre del archivo (fileName)\n    if (item.binary.data.fileName) {\n      item.binary.data.fileName = item.binary.data.fileName.replace(/\\.md$/, '.txt');\n    }\n\n    // Cambiar la extensión del archivo (fileExtension)\n    item.binary.data.fileExtension = 'txt';\n  }\n}\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        608,
+        256
+      ],
+      "id": "f8e31bea-4c87-4e11-afed-e5159997f6dd",
+      "name": "Md to Txt"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Obtener el nombre del modelo del agente AI\nconst modelName = $('Globals').first().json['chat-bot-model'] || 'unknown-model';\n\n// Formatear fecha manualmente para mejor control\nconst now = new Date();\nconst year = now.getFullYear();\nconst month = String(now.getMonth() + 1).padStart(2, '0');\nconst day = String(now.getDate()).padStart(2, '0');\nconst hours = String(now.getHours()).padStart(2, '0');\nconst minutes = String(now.getMinutes()).padStart(2, '0');\nconst seconds = String(now.getSeconds()).padStart(2, '0');\nconst timeStamp = `${year}-${month}-${day}_${hours}:${minutes}:${seconds}`;\n\n// Usar path predeterminado si no está disponible en los datos\nconst answersPath = $('Globals').first()?.json?.['repo-github']?.['answers-path'] || '';\n\n// Procesar todos los items de entrada (snippets python)\nconst results = [];\nfor (const item of $input.all()) {\n  const newItem = {\n    json: {      \n      file_name: item.json.case.replace(/\\.py$/, '.md'),\n      path: `${answersPath}${timeStamp}-${modelName}/`,\n      timestamp: timeStamp,\n      result: item.json.result\n    }\n  };\n  results.push(newItem);\n}\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4080,
+        688
+      ],
+      "id": "40733c1d-ba1b-423a-84f4-06d28177f7cd",
+      "name": "Target Folder"
+    },
+    {
+      "parameters": {
+        "content": "## Seting Global Configuration and Start Workflows",
+        "height": 252,
+        "width": 552
+      },
+      "id": "4b399afe-d8cb-4c37-a078-4a7f70446a3d",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        144,
+        656
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "model": "=nomic-embed-text:v1.5"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        800,
+        800
+      ],
+      "id": "46c5d8d1-2f2f-47c9-9a0c-15203ae8a07f",
+      "name": "Embeddings Ollamas",
+      "credentials": {
+        "ollamaApi": {
+          "id": "xHuYe0MDGOs9IpBW",
+          "name": "Local Ollama service"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e3a91689-1cb3-4ef9-9f8f-a835b210dfdd",
+              "name": "rag_chatbot_step",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "9a49b53b-a975-4399-8794-af34e0c12605",
+              "name": "repo-github.owner",
+              "value": "jose-manuel-suarez",
+              "type": "string"
+            },
+            {
+              "id": "0bc347af-0108-4b05-a195-6b8b8370b94f",
+              "name": "repo-github.name",
+              "value": "qiskit_rag",
+              "type": "string"
+            },
+            {
+              "id": "758ce39d-86f5-47c1-8482-a6c8edd62b15",
+              "name": "repo-github.data-ingestion-path",
+              "value": "data-ingestion/",
+              "type": "string"
+            },
+            {
+              "id": "9d6b6580-ac46-4b5f-88fa-095f285305c4",
+              "name": "repo-github.data-rag-chatbot-path",
+              "value": "data-rag-chatbot/",
+              "type": "string"
+            },
+            {
+              "id": "57acb4da-d073-4968-9fb4-4c0a9c7e384a",
+              "name": "repo-github.snippets-path",
+              "value": "data-rag-chatbot/snippets/",
+              "type": "string"
+            },
+            {
+              "id": "3ba41241-0620-49aa-b0d8-d183974dd539",
+              "name": "repo-github.prompts-path",
+              "value": "data-rag-chatbot/prompts/",
+              "type": "string"
+            },
+            {
+              "id": "90978372-5b87-42fe-abdf-87a73a2a2422",
+              "name": "repo-github.answers-path",
+              "value": "answers/",
+              "type": "string"
+            },
+            {
+              "id": "35383060-3cf8-4fbf-bf9f-06416a999809",
+              "name": "target-repo-url",
+              "value": "https://github.com/",
+              "type": "string"
+            },
+            {
+              "id": "6dc30f07-aa7a-476c-974b-57165d736746",
+              "name": "target-version",
+              "value": "0.46.0",
+              "type": "string"
+            },
+            {
+              "id": "ab20df8d-090f-488c-b4cd-8be228a2aa2f",
+              "name": "only_qrn_for_data_ingestion",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "0551a422-157a-4904-aff7-76cf9eeec885",
+              "name": "user_prompt_file",
+              "value": "user_prompt.txt",
+              "type": "string"
+            },
+            {
+              "id": "62370c41-c776-44d2-8b4e-8115532cd675",
+              "name": "system_prompt_file",
+              "value": "system_prompt.txt",
+              "type": "string"
+            },
+            {
+              "id": "dd03c801-ce11-489b-806c-f5b25c859172",
+              "name": "chat-bot-model",
+              "value": "ollama-gpt-oss-20b",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        352,
+        736
+      ],
+      "id": "94995470-c9bd-48b7-b200-a15b76ec03d0",
+      "name": "Globals"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        208,
+        736
+      ],
+      "id": "c7a3e265-f1a2-49c5-a76d-7d6441ccf4b0",
+      "name": "Inicio"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "list",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $json['target-repo-url'] }}{{ $json['repo-github'].owner }}",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $json['target-repo-url'] }}{{ $json['repo-github'].owner }}/{{ $json['repo-github'].name }}",
+          "mode": "url"
+        },
+        "filePath": "={{ $json['repo-github']['data-ingestion-path'] }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -480,
+        432
+      ],
+      "id": "8b79d0e3-fcb8-4624-800f-14800bbaa5bb",
+      "name": "Listado de archivos",
+      "webhookId": "0c0fa06d-a9dc-4624-a270-7691afad516a",
+      "credentials": {
+        "githubApi": {
+          "id": "uBKzF4rTCQm2nHgd",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "23b5d8ac-8b72-47eb-a747-91185de2a75c",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "={{ $('Globals').item.json['target-version'] }}",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "383502df-8925-416d-9a47-6b82dcad15bc",
+              "leftValue": "={{ $json.type }}",
+              "rightValue": "file",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "92378746-aa14-4948-a861-674bf8e5ebc2",
+              "leftValue": "={{ $json.size }}",
+              "rightValue": 100,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -256,
+        240
+      ],
+      "id": "a41dab88-2b5b-449f-8ee2-2a193f7fa420",
+      "name": "Versión objetivo"
+    },
+    {
+      "parameters": {
+        "jsCode": "const onlyQRN = $('Globals').first().json.only_qrn_for_data_ingestion;\n\nreturn $input.all().filter(item => {\n    if (onlyQRN) {\n      return item.json.name && item.json.name.startsWith('qrn_');\n    }\n    return true;\n  }\n);"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        256
+      ],
+      "id": "567448ab-45bc-463b-8d12-8e80c950deab",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json['target-repo-url'] }}{{ $('Globals').item.json['repo-github'].owner }}",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json['target-repo-url'] }}{{ $('Globals').item.json['repo-github'].owner }}/{{ $('Globals').item.json['repo-github'].name }}",
+          "mode": "url"
+        },
+        "filePath": "={{ $('Globals').item.json['repo-github']['data-ingestion-path'] }}{{ $json.name }}",
+        "additionalParameters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        400,
+        256
+      ],
+      "id": "7eb6641c-f298-4244-8b4d-a0be23e7ed58",
+      "name": "Obtener Archivo",
+      "webhookId": "0f576d05-825f-474f-9c59-0ecd17b0b0dc",
+      "credentials": {
+        "githubApi": {
+          "id": "uBKzF4rTCQm2nHgd",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Descra de Archivos",
+        "height": 400,
+        "width": 1248,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -512,
+        208
+      ],
+      "id": "df3d3942-e9da-464f-b952-3b9806f1d97b",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "dc7edbcb-1ffd-4fa9-8269-a60a2430152e",
+              "leftValue": "={{ $json.rag_chatbot_step }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        496,
+        736
+      ],
+      "id": "43b491f5-92aa-44dd-a5fc-eb0396644616",
+      "name": "Ingest or ChatBot Logic"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -32,
+        240
+      ],
+      "id": "92502bcf-e03f-480b-a734-bf32c2bf88fc",
+      "name": "Loop Over Files"
+    },
+    {
+      "parameters": {
+        "content": "# Procesamiento de datos\n## Procesamiento previo a la invocación ...",
+        "height": 716,
+        "width": 1808,
+        "color": 2
+      },
+      "id": "b2a23b09-14dd-44e4-a405-74eebc15ec78",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1312,
+        384
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "list",
+        "owner": {
+          "__rl": true,
+          "value": "=https://github.com/{{ $json['repo-github'].owner }}",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "=https://github.com/{{ $json['repo-github'].owner }}/{{ $json['repo-github'].name }}",
+          "mode": "url"
+        },
+        "filePath": "={{ $json['repo-github']['snippets-path'] }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        1600,
+        624
+      ],
+      "id": "72a6fbb0-e579-412f-b6f8-a76cdd966791",
+      "name": "Snippets",
+      "webhookId": "0f576d05-825f-474f-9c59-0ecd17b0b0dc",
+      "credentials": {
+        "githubApi": {
+          "id": "uBKzF4rTCQm2nHgd",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "list",
+        "owner": {
+          "__rl": true,
+          "value": "=https://github.com/{{ $json['repo-github'].owner }}",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "=https://github.com/{{ $json['repo-github'].owner }}/{{ $json['repo-github'].name }}",
+          "mode": "url"
+        },
+        "filePath": "={{ $json['repo-github']['prompts-path'] }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        1600,
+        848
+      ],
+      "id": "a80a738b-1931-4a0b-a29d-dbfeeadc4bd8",
+      "name": "Prompts",
+      "webhookId": "0c0fa06d-a9dc-4624-a270-7691afad516a",
+      "credentials": {
+        "githubApi": {
+          "id": "uBKzF4rTCQm2nHgd",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b8cf3f0d-60ad-488c-bf0e-342fca61034d",
+              "name": "repo-github.owner",
+              "value": "jose-manuel-suarez",
+              "type": "string"
+            },
+            {
+              "id": "609c6d74-1353-450e-b3b3-8c26ddf3ae78",
+              "name": "repo-github.name",
+              "value": "qiskit_rag",
+              "type": "string"
+            },
+            {
+              "id": "c734f48d-2ac7-4094-8424-0fa6508c7546",
+              "name": "repo-github.data-ingestion-path",
+              "value": "data-ingestion/",
+              "type": "string"
+            },
+            {
+              "id": "0ea63c02-e8aa-4985-bc39-1fe4b84e6da3",
+              "name": "repo-github.data-rag-chatbot-path",
+              "value": "data-rag-chatbot/",
+              "type": "string"
+            },
+            {
+              "id": "f7494b16-c156-46db-87bc-c74f5d4a7bcb",
+              "name": "repo-github.snippets-path",
+              "value": "data-rag-chatbot/snippets/",
+              "type": "string"
+            },
+            {
+              "id": "cc3a374a-6468-4820-be03-f86972042d89",
+              "name": "repo-github.prompts-path",
+              "value": "data-rag-chatbot/prompts/",
+              "type": "string"
+            },
+            {
+              "id": "c0b17473-10f4-4517-a32c-4e5881ef8de1",
+              "name": "repo-github.answers-path",
+              "value": "data-rag-chatbot/answers/",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1360,
+        720
+      ],
+      "id": "6502ebfd-90ec-4aed-a1a6-ba902e974dc6",
+      "name": "Seteo de campos globales"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.download_url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1808,
+        624
+      ],
+      "id": "d4c74a11-6992-46f3-94b2-fb1ed57ab3ee",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Tomar los dos registros del array y asignarlos a campos específicos\nconst items = $input.all();\nif (items.length >= 2) {\n  const newItem = {\n    system_prompt: items[0].json.data,\n    user_prompt: items[1].json.data\n  }\n  return [newItem];\n} else {\n  throw new Error('Se esperaban al menos 2 registros de entrada');\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2016,
+        848
+      ],
+      "id": "fd1405d7-bb50-49cf-bd1d-64577f08bb3d",
+      "name": "Prompts del sistema y de usuario"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "535abfda-dac7-490b-8c83-3a36c56dea3a",
+              "name": "snippet_name",
+              "value": "={{ $('Snippets').item.json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "adc34deb-619c-47cc-a3ae-004c0143b811",
+              "name": "python_code",
+              "value": "={{ $data }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2016,
+        624
+      ],
+      "id": "bd5ca590-38f8-4248-9cf9-8abc650d7a66",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0f0c4f55-707d-4885-9647-d626a022dd50",
+              "leftValue": "={{ $json.snippet_name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "1adecdcb-93e2-46d1-9674-736523bad34d",
+              "leftValue": "={{ $json.snippet_name }}",
+              "rightValue": ".py",
+              "operator": {
+                "type": "string",
+                "operation": "endsWith"
+              }
+            },
+            {
+              "id": "f60e1498-01f6-4b88-8579-a35ae78a05e8",
+              "leftValue": "={{ $json.python_code }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        2224,
+        624
+      ],
+      "id": "135c46af-8c99-433b-b41c-b10df579cddd",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2432,
+        832
+      ],
+      "id": "62cf050b-be2c-4494-a4ac-e1112e50e346",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = [];\n\nif ($input.first().json.snippet_name && $input.first().json.python_code) {\n  const processedItem = {\n    json: {\n      system_prompt: $input.first().json.system_prompt,\n      user_prompt: $input.first().json.user_prompt.replace('{qiskit_snippet}', $input.first().json.python_code),\n      snippet_name: $input.first().json.snippet_name || 'unknown'\n    }\n  };\n  results.push(processedItem);\n}\n\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2912,
+        912
+      ],
+      "id": "b5f81a11-ab32-44cf-9fb2-12727af7c56b",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "content": "# Chatbot",
+        "height": 720,
+        "width": 640,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3152,
+        576
+      ],
+      "id": "364550bc-7cec-42dc-a5b3-fbd0f4b41d96",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        3376,
+        1008
+      ],
+      "id": "ae201fce-e32e-46c1-b15c-5a5b7da8118e",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "JRi4yF1H4P3RVtWg",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Files Upload",
+        "height": 288,
+        "width": 608,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3856,
+        608
+      ],
+      "id": "eb815a6a-df65-4250-8955-659047072257",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "model": "gpt-oss:20b",
+        "options": {}
+      },
+      "id": "be99805e-1679-4f83-8196-2e329f29ff28",
+      "name": "Ollama Joaquín",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "position": [
+        3216,
+        1008
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "ollamaApi": {
+          "id": "UURqPwJ9v0Q23FAw",
+          "name": "Joaquín Ollama Service"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.download_url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1808,
+        848
+      ],
+      "id": "e06138fe-6227-4763-a6ba-490ea5a71af6",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2704,
+        832
+      ],
+      "id": "e76250eb-d3e9-45cb-89db-9beb9855fcbe",
+      "name": "Loop Over Snippets1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3616,
+        640
+      ],
+      "id": "300d63af-7085-462e-bdce-9adfbe39b350",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f325007d-8d5b-49c6-afd2-6546698dcb47",
+              "name": "case",
+              "value": "={{ $json.snippet_name }}",
+              "type": "string"
+            },
+            {
+              "id": "a76f22bc-5b24-41bb-838c-30153d70c65b",
+              "name": "result",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3872,
+        688
+      ],
+      "id": "bcd91e65-338f-4bd4-9927-2cdc2187bb9c",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json['target-repo-url'] }}{{ $('Globals').item.json['repo-github'].owner }} ",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json['target-repo-url'] }}{{ $('Globals').item.json['repo-github'].owner }}/{{ $('Globals').item.json['repo-github'].name }}",
+          "mode": "url"
+        },
+        "filePath": "={{ $json.path }}{{ $json.file_name }}",
+        "fileContent": "={{ $json.result }}",
+        "commitMessage": "=execution: {{ $json.timestamp }} model: {{ $('Globals').item.json['chat-bot-model'] }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        4272,
+        688
+      ],
+      "id": "449c3308-230a-441e-976d-70792c164bae",
+      "name": "Create a file",
+      "webhookId": "d918fda6-8f2e-4085-b0c8-5480f955a594",
+      "credentials": {
+        "githubApi": {
+          "id": "uBKzF4rTCQm2nHgd",
+          "name": "GitHub account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "AI Agent": [
+      {
+        "json": {
+          "output": "| Line | Code | Scenario Id | Scenario | Artifact | Refactoring |\n| :-: | :- | :-: | :- | :- | :- |"
+        }
+      },
+      {
+        "json": {
+          "output": "| Line | Code | Scenario Id | Scenario | Artifact | Refactoring |\n| :-: | :- | :-: | :- | :- | :- |\n| 4 | `from qiskit.qasm import Qasm` | * | Deprecation -> `qiskit.qasm` module removed | `qiskit.qasm.Qasm` | Remove import; use `QuantumCircuit.from_qasm_str()` or `QuantumCircuit.from_qasm_file()` |\n| 5 | `from qiskit.algorithms import VQE` | * | Deprecation -> `qiskit.algorithms` module deprecated, `VQE` moved | `qiskit.algorithms.VQE` | `from qiskit.algorithms.minimum_eigensolvers import VQE` |"
+        }
+      },
+      {
+        "json": {
+          "output": "| Line | Code | Scenario Id | Scenario | Artifact | Refactoring |\n| :-: | :- | :-: | :- | :- | :- |\n| 3 | `from qiskit import Aer              # type: ignore` | * | Deprecation -> qiskit.Aer module moved to qiskit_aer | Aer | `from qiskit_aer import Aer` |\n| 4 | `from qiskit import qasm             # type: ignore` | * | Removal -> qiskit.qasm module removed | qasm | |"
+        }
+      },
+      {
+        "json": {
+          "output": "| Line | Code | Scenario Id | Scenario | Artifact | Refactoring |\n| :-: | :- | :-: | :- | :- | :- |\n| 3 | `from qiskit import QuantumCircuit, qasm, execute` | * | Deprecation -> `execute()` function deprecated (optional) | qiskit.execute | `from qiskit import QuantumCircuit, qasm` |\n| 13 | `job = execute(qc, getMyBackend(), shots=1000)` | * | Deprecation -> `execute()` function deprecated (optional). The `execute` function is replaced by calling the `run()` method directly on a backend object. | qiskit.execute.execute | `job = getMyBackend().run(qc, shots=1000)` |\n| 14 | `result = job.result().get_counts(qc)` | * | Deprecation -> `get_counts(circuit)` argument deprecated (optional). The `get_counts` method no longer accepts a `QuantumCircuit` object as an argument for single-circuit jobs. | qiskit.result.Result.get_counts | `result = job.result().get_counts()` |"
+        }
+      },
+      {
+        "json": {
+          "output": "| Line | Code | Scenario Id | Scenario | Artifact | Refactoring |\n| :-: | :- | :-: | :- | :- | :- |\n| 3 | `from qiskit import QuantumCircuit, execute, Aer, qasm` | * | Deprecation -> qiskit.execute() function deprecated | execute | Remove `execute` from import statement |\n| 3 | `from qiskit import QuantumCircuit, execute, Aer, qasm` | * | Migration -> qiskit.qasm module import path changed | qasm | Remove `qasm` from import statement if not used |"
+        }
+      },
+      {
+        "json": {
+          "output": "| Line | Code | Scenario Id | Scenario | Artifact | Refactoring |\n| :-: | :- | :-: | :- | :- | :- |\n| 10 | `from qiskit import Aer` | * | Modernization -> qiskit.Aer import can be replaced with qiskit_aer specific import | qiskit.Aer | `from qiskit_aer import AerSimulator` |\n| 11 | `backend = Aer.get_backend('aer_simulator')` | * | Modernization -> Aer.get_backend() replaced by direct AerSimulator instantiation | Aer.get_backend | `backend = AerSimulator()` |"
+        }
+      },
+      {
+        "json": {
+          "output": "| Line | Code | Scenario Id | Scenario | Artifact | Refactoring |\n| :-: | :- | :-: | :- | :- | :- |\n| 7 | `from qiskit import Aer` | * | Deprecation -> Aer module moved to qiskit_aer | qiskit.Aer | `from qiskit_aer import Aer` |\n| 9 | `from qiskit import execute` | * | Deprecation -> execute function deprecated, use backend.run() instead | qiskit.execute | |\n| 10 | `job = execute(qc, backend, shots=1000)` | * | Deprecation -> execute function deprecated, use backend.run() instead | execute() | `job = backend.run(qc, shots=1000)` |\n| 13 | `from qiskit.algorithms import VQE` | * | Deprecation -> VQE moved to qiskit.algorithms.minimum_eigensolvers | qiskit.algorithms.VQE | `from qiskit.algorithms.minimum_eigensolvers import VQE` |\n| 15 | `from qiskit import SPSA` | * | Deprecation -> SPSA moved to qiskit.algorithms.optimizers | qiskit.SPSA | `from qiskit.algorithms.optimizers import SPSA` |"
+        }
+      },
+      {
+        "json": {
+          "output": "| Line | Code | Scenario Id | Scenario | Artifact | Refactoring |\n| :-: | :- | :-: | :- | :- | :- |"
+        }
+      },
+      {
+        "json": {
+          "output": "| Line | Code | Scenario Id | Scenario | Artifact | Refactoring |\n| :-: | :- | :-: | :- | :- | :- |\n| 2 | `from qiskit.opflow import PauliSumOp` | DEP_QISKIT_OPFLOW | Deprecation -> `qiskit.opflow` module deprecated | `qiskit.opflow` | `from qiskit.quantum_info import SparsePauliOp` |\n| 3 | `from qiskit.primitives import BackendEstimator` | REM_QISKIT_PRIMITIVES_BACKENDESTIMATOR | Removal -> `qiskit.primitives.BackendEstimator` removed | `qiskit.primitives.BackendEstimator` | `from qiskit.primitives import Estimator` |\n| 13 | `H1 = PauliSumOp.from_list([(\"II\", 1), (\"IZ\", 2), (\"XI\", 3)])` | DEP_CLASS_PAULISUMOP | Deprecation -> `PauliSumOp` class deprecated | `PauliSumOp` | `H1 = SparsePauliOp.from_list([(\"II\", 1), (\"IZ\", 2), (\"XI\", 3)])` |\n| 17 | `estimator = BackendEstimator(` | REM_CLASS_BACKENDESTIMATOR_INSTANTIATION | Removal -> `BackendEstimator` class and its instantiation pattern removed, constructor arguments changed | `BackendEstimator` | `estimator = Estimator(options={\"shots\": 1024})` |"
+        }
+      },
+      {
+        "json": {
+          "output": "| Line | Code | Scenario Id | Scenario | Artifact | Refactoring |\n| :-: | :- | :-: | :- | :- | :- |\n| 1 | `from qiskit import qasm` | * | Deprecation -> `qiskit.qasm` module import deprecated | qiskit.qasm | `from qiskit import QuantumCircuit` |\n| 8 | `circuit1 = qasm.Qasm(data=qasm_str)` | * | Deprecation -> `qiskit.qasm.Qasm` class deprecated | qiskit.qasm.Qasm | `qc1 = QuantumCircuit.from_qasm_str(qasm_str)` |\n| 9 | `program1 = circuit1.parse()` | * | Deprecation -> `parse()` method of deprecated `qiskit.qasm.Qasm` output | qiskit.qasm.Qasm.parse() | |\n| 10 | `qc1 = program1.get_circuit()` | * | Deprecation -> `get_circuit()` method of deprecated `qiskit.qasm.ParsedQASM` object | qiskit.qasm.ParsedQASM.get_circuit() | |"
+        }
+      },
+      {
+        "json": {
+          "output": "| Line | Code | Scenario Id | Scenario | Artifact | Refactoring |\n| :-: | :- | :-: | :- | :- | :- |\n| 1 | `from qiskit.qasm import Qasm` | * | Deprecation -> `qiskit.qasm` module and `Qasm` class are deprecated | `qiskit.qasm.Qasm` | `from qiskit.circuit import QuantumCircuit` |\n| 4 | `circuit2 = Qasm(filename=qasm_file)` | * | Deprecation -> `Qasm` class constructor is deprecated | `Qasm` | `qc2 = QuantumCircuit.from_qasm_file(qasm_file)` |\n| 5 | `program2 = circuit2.parse()` | * | Deprecation -> `Qasm.parse()` method is deprecated | `parse()` | |\n| 6 | `qc2 = program2.get_circuit()` | * | Deprecation -> `QasmProgram.get_circuit()` method is deprecated | `get_circuit()` | |"
+        }
+      },
+      {
+        "json": {
+          "output": "| Line | Code | Scenario Id | Scenario | Artifact | Refactoring |\n| :-: | :- | :-: | :- | :- | :- |\n| 1 | `from qiskit import QuantumCircuit, Aer, execute` | * | Deprecation -> `execute()` function deprecated | `execute` | `from qiskit import QuantumCircuit, Aer` |\n| 2 | `from qiskit import qasm2 as qasm` | * | Deprecation -> `qiskit.qasm2` module deprecated | `qiskit.qasm2` | |\n| 9 | `qasm_str = qc.qasm()` | * | Deprecation -> `QuantumCircuit.qasm()` method deprecated | `QuantumCircuit.qasm()` | `qasm_str = qc.qasm(formatted=True)` |\n| 11 | `qasm_qc = qasm.Qasm(data=qasm_str)` | * | Deprecation -> `qiskit.qasm.Qasm` class deprecated | `qiskit.qasm.Qasm` | `circuit = QuantumCircuit.from_qasm_str(qasm_str)` |\n| 12 | `program = qasm_qc.parse()` | * | Deprecation -> `qiskit.qasm.Qasm.parse()` method deprecated | `qiskit.qasm.Qasm.parse()` | |\n| 13 | `circuit = program.get_circuit()` | * | Deprecation -> `qiskit.qasm.Program.get_circuit()` method deprecated | `qiskit.qasm.Program.get_circuit()` | |\n| 16 | `job = execute(qasm_qc, simulator, shots=1024)` | * | Deprecation -> `execute()` function deprecated | `execute` | `job = simulator.run(circuit, shots=1024)` |\n| 18 | `counts = result.get_counts(qasm_qc)` | * | Deprecation -> `Result.get_counts()` method argument changed | `Result.get_counts()` | `counts = result.get_counts(circuit)` |"
+        }
+      },
+      {
+        "json": {
+          "output": "| Line | Code | Scenario Id | Scenario | Artifact | Refactoring |\n| :-: | :- | :-: | :- | :- | :- |\n| 2 | `from qiskit import qasm2 as qasm` | * | Deprecation -> qiskit.qasm2 module deprecated | qiskit.qasm2 | `from qiskit import qasm` |\n| 10 | `qasm_str = qasm.dumps(qc)` | * | Deprecation -> qasm.dumps() function deprecated | qasm.dumps | `qasm_str = qasm.circuit_to_qasm_str(qc)` |\n| 11 | `parsed_circuit = qasm.loads(qasm_str)` | * | Deprecation -> qasm.loads() function deprecated | qasm.loads | `parsed_circuit = qasm.qasm_str_to_circuit(qasm_str)` |"
+        }
+      },
+      {
+        "json": {
+          "output": "| Line | Code | Scenario Id | Scenario | Artifact | Refactoring |\n| :-: | :- | :-: | :- | :- | :- |\n| 3 | `from qiskit.tools.visualization import plot_histogram` | * | Deprecation -> qiskit.tools.visualization module deprecated | qiskit.tools.visualization.plot_histogram | `from qiskit.visualization import plot_histogram` |\n| 4 | `from qiskit.tools.monitor import job_monitor` | * | Deprecation -> qiskit.tools.monitor module deprecated | qiskit.tools.monitor.job_monitor | `from qiskit.utils.job_monitor import job_monitor` |"
+        }
+      },
+      {
+        "json": {
+          "output": "| Line | Code | Scenario Id | Scenario | Artifact | Refactoring |\n| :-: | :- | :-: | :- | :- | :- |\n| 3 | `from qiskit.tools.events import TextProgressBar` | * | Deprecation -> TextProgressBar import deprecated | TextProgressBar | `from qiskit.utils.job_monitoring import job_monitor` |\n| 12 | `TextProgressBar().update(job)` | * | Deprecation -> TextProgressBar usage deprecated | TextProgressBar | `job_monitor(job)` |"
+        }
+      },
+      {
+        "json": {
+          "output": "| Line | Code | Scenario Id | Scenario | Artifact | Refactoring |\n| :-: | :- | :-: | :- | :- | :- |\n| 2 | `from qiskit.extensions import HGate, XGate, Initialize` | * | Deprecation -> `qiskit.extensions` module deprecated | HGate | |\n| 2 | `from qiskit.extensions import HGate, XGate, Initialize` | * | Deprecation -> `qiskit.extensions` module deprecated | XGate | |\n| 2 | `from qiskit.extensions import HGate, XGate, Initialize` | * | Deprecation -> `qiskit.extensions` module deprecated | Initialize | |\n| 3 | `from qiskit.extensions import Barrier` | * | Deprecation -> `qiskit.extensions` module deprecated | Barrier | |\n| 4 | `from qiskit.extensions import UnitaryGate` | * | Deprecation -> `qiskit.extensions` module deprecated | UnitaryGate | `from qiskit.circuit.library import UnitaryGate` |\n| 9 | `qc.append(HGate(), [qr[0]])` | * | Deprecation -> Using `qc.append()` for standard gates is less idiomatic (optional) | qc.append(HGate) | `qc.h(qr[0])` |\n| 10 | `qc.append(XGate(), [qr[1]])` | * | Deprecation -> Using `qc.append()` for standard gates is less idiomatic (optional) | qc.append(XGate) | `qc.x(qr[1])` |\n| 17 | `init_gate = Initialize(psi)` | * | Deprecation -> `Initialize` class instantiation is less idiomatic (optional) | Initialize | |\n| 18 | `qc.append(init_gate, [qr[0]])` | * | Deprecation -> Using `qc.append()` for `Initialize` is less idiomatic (optional) | qc.append(init_gate) | `qc.initialize(psi, [qr[0]])` |\n| 20 | `qc.append(Barrier(3), [qr[0], qr[1], qr[2]])` | * | Deprecation -> Using `qc.append()` for `Barrier` is less idiomatic (optional) | qc.append(Barrier) | `qc.barrier(qr)` |"
+        }
+      },
+      {
+        "json": {
+          "output": "| Line | Code | Scenario Id | Scenario | Artifact | Refactoring |\n| :-: | :- | :-: | :- | :- | :- |\n| 4 | `from qiskit import extensions as ext` | * | Deprecation -> qiskit.extensions module deprecated | qiskit.extensions | |\n| 19 | `qc.prepare_state(psi, [qr[0]])` | * | Deprecation -> QuantumCircuit.prepare_state() method deprecated | QuantumCircuit.prepare_state | `qc.initialize(psi, [qr[0]])` |\n| 21 | `qc.append(ext.Barrier(3), [qr[0], qr[1], qr[2]])` | * | Deprecation -> Barrier from qiskit.extensions deprecated | qiskit.extensions.Barrier | `qc.barrier([qr[0], qr[1], qr[2]])` |"
+        }
+      },
+      {
+        "json": {
+          "output": "| Line | Code | Scenario Id | Scenario | Artifact | Refactoring |\n| :-: | :- | :-: | :- | :- | :- |\n| 17 | `result = execute(qc, simulator).result()` | * | Deprecation -> `execute()` function deprecated | execute | `result = simulator.run(qc).result()` |"
+        }
+      },
+      {
+        "json": {
+          "output": "| Line | Code | Scenario Id | Scenario | Artifact | Refactoring |\n| :-: | :- | :-: | :- | :- | :- |\n| 2 | `from qiskit.extensions import UnitaryGate` | * | Module Migration -> UnitaryGate moved to qiskit.circuit.library | qiskit.extensions.UnitaryGate | `from qiskit.circuit.library import UnitaryGate` |\n| 3 | `from qiskit.extensions.exceptions import ExtensionError` | * | Module Migration -> ExtensionError moved to qiskit.circuit.exceptions, consider using CircuitError | qiskit.extensions.exceptions.ExtensionError | `from qiskit.circuit.exceptions import CircuitError` |"
+        }
+      },
+      {
+        "json": {
+          "output": "| Line | Code | Scenario Id | Scenario | Artifact | Refactoring |\n| :-: | :- | :-: | :- | :- | :- |\n| 3 | `from qiskit.providers import fake_provider` | * | Deprecation -> `qiskit.providers.fake_provider` module deprecated | `qiskit.providers.fake_provider` | `from qiskit_ibm_provider import fake_provider` |\n| 12 | `pulse.measure(0)` | * | Deprecation -> `pulse.measure()` function deprecated | `pulse.measure` | `Measure([0])` |"
+        }
+      },
+      {
+        "json": {
+          "output": "| Line | Code | Scenario Id | Scenario | Artifact | Refactoring |\n| :-: | :- | :-: | :- | :- | :- |\n| 3 | `from qiskit.providers.fake_provider import FakeOpenPulse3Q` | * | Deprecation -> qiskit.providers.fake_provider module deprecated (optional) | qiskit.providers.fake_provider | `from qiskit.providers.fake_backends import FakeOpenPulse3Q` |\n| 9 | `pulse.u2(0, math.pi, 0)` | * | Deprecation -> qiskit.pulse.builder.u2() function deprecated | qiskit.pulse.builder.u2 | `pulse.rz(math.pi, 0)`<br>`pulse.sx(0)`<br>`pulse.rz(math.pi, 0)` |"
+        }
+      },
+      {
+        "json": {
+          "output": ""
+        }
+      },
+      {
+        "json": {
+          "output": "| Line | Code | Scenario Id | Scenario | Artifact | Refactoring |\n| :-: | :- | :-: | :- | :- | :- |\n| 3 | `from qiskit.test.reference_circuits import ReferenceCircuits` | `*` | Deprecation -> `qiskit.test.reference_circuits` module import discouraged for general circuit creation (optional) | `qiskit.test.reference_circuits` | `from qiskit import QuantumCircuit` |\n| 5 | `qc = ReferenceCircuits.bell()` | `*` | Deprecation -> `ReferenceCircuits.bell()` replaced by explicit `QuantumCircuit` construction (optional) | `ReferenceCircuits.bell()` | \n```python\\nqc = QuantumCircuit(2, 2)\\nqc.h(0)\\nqc.cx(0, 1)\\nqc.measure([0, 1], [0, 1])\\n```\n |"
+        }
+      },
+      {
+        "json": {
+          "output": "| Line | Code | Scenario Id | Scenario | Artifact | Refactoring |\n| :-: | :- | :-: | :- | :- | :- |\n| 1 | `from qiskit import execute` | * | Deprecation -> `qiskit.execute` is deprecated | `qiskit.execute` | |\n| 3 | `from qiskit.test.reference_circuits import ReferenceCircuits` | * | Deprecation -> `qiskit.test.reference_circuits` module deprecated | `qiskit.test.reference_circuits` | `from qiskit.circuit import QuantumCircuit` |\n| 4 | `from qiskit.test.base import BaseTestCase` | * | Deprecation -> `qiskit.test.base.BaseTestCase` deprecated | `qiskit.test.base.BaseTestCase` | `from unittest import TestCase` |\n| 7 | `qc = ReferenceCircuits.bell()` | * | Deprecation -> `ReferenceCircuits.bell()` deprecated | `ReferenceCircuits.bell()` | `qc = QuantumCircuit(2, 2)\\nqc.h(0)\\nqc.cx(0, 1)` |\n| 9 | `job = execute(qc, backend, shots=1024)` | * | Deprecation -> `execute()` function deprecated | `execute()` | `job = backend.run(qc, shots=1024)` |\n| 16 | `class TestBellCircuit(BaseTestCase):` | * | Deprecation -> `BaseTestCase` deprecated | `BaseTestCase` | `class TestBellCircuit(unittest.TestCase):` |\n| 19 | `qc = ReferenceCircuits.bell()` | * | Deprecation -> `ReferenceCircuits.bell()` deprecated | `ReferenceCircuits.bell()` | `qc = QuantumCircuit(2, 2)\\nqc.h(0)\\nqc.cx(0, 1)` |\n| 21 | `job = execute(qc, backend, shots=1024)` | * | Deprecation -> `execute()` function deprecated | `execute()` | `job = backend.run(qc, shots=1024)` |"
+        }
+      },
+      {
+        "json": {
+          "output": "| Line | Code | Scenario Id | Scenario | Artifact | Refactoring |\n| :-: | :- | :-: | :- | :- | :- |\n| 2 | `from qiskit.utils import QuantumInstance, algorithm_globals` | * | Deprecation -> `qiskit.utils.QuantumInstance` removed | `QuantumInstance` | |\n| 2 | `from qiskit.utils import QuantumInstance, algorithm_globals` | * | Deprecation -> `qiskit.utils.algorithm_globals` removed | `algorithm_globals` | |\n| 4 | `from qiskit.opflow import Z, I, X` | * | Deprecation -> `qiskit.opflow` module removed | `qiskit.opflow` | `from qiskit.quantum_info import SparsePauliOp` |\n| 7 | `hamiltonian = (Z ^ I) + (X ^ X)` | * | Deprecation -> `qiskit.opflow` operators and expressions removed | `(Z ^ I) + (X ^ X)` | `hamiltonian = SparsePauliOp.from_list([('ZI', 1), ('XX', 1)])` |\n| 10 | `initial_point = algorithm_globals.random.random(ansatz.num_parameters)` | * | Deprecation -> `qiskit.utils.algorithm_globals` removed | `algorithm_globals.random.random` | `initial_point = np.random.rand(ansatz.num_parameters)` |\n| 13 | `quantum_instance = QuantumInstance(` | * | Deprecation -> `qiskit.utils.QuantumInstance` removed | `QuantumInstance` | |\n| 16 | `    seed_simulator=algorithm_globals.random_seed,` | * | Deprecation -> `qiskit.utils.algorithm_globals` removed | `algorithm_globals.random_seed` | `    seed_simulator=seed,` |\n| 17 | `    seed_transpiler=algorithm_globals.random_seed` | * | Deprecation -> `qiskit.utils.algorithm_globals` removed | `algorithm_globals.random_seed` | `    seed_transpiler=seed` |"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Embeddings Ollama": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Ollama1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Md to Txt": {
+      "main": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Target Folder": {
+      "main": [
+        [
+          {
+            "node": "Create a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Globals": {
+      "main": [
+        [
+          {
+            "node": "Ingest or ChatBot Logic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Inicio": {
+      "main": [
+        [
+          {
+            "node": "Globals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Semantic Text Splitter1": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Ollamas": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Semantic Text Splitter1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Listado de archivos": {
+      "main": [
+        [
+          {
+            "node": "Versión objetivo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Versión objetivo": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Obtener Archivo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener Archivo": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Files",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Md to Txt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ingest or ChatBot Logic": {
+      "main": [
+        [
+          {
+            "node": "Seteo de campos globales",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Listado de archivos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Files": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Snippets": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prompts": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seteo de campos globales": {
+      "main": [
+        [
+          {
+            "node": "Snippets",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Prompts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prompts del sistema y de usuario": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Snippets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Snippets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Ollama Joaquín": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Prompts del sistema y de usuario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Snippets1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Target Folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "74b779e5-2ac7-415c-83ea-6ea0ccee325c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "558d88703fb65b2d0e44613bc35916258b0f0bf983c5d4730c00c424b77ca36a"
+  },
+  "id": "1KQDRSCurKsic3uU",
+  "tags": []
+}
