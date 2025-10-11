@@ -5,7 +5,8 @@ You are a quantum software engineering expert specializing in Qiskit migrations.
 To perform your analysis, you will rely on your deep knowledge of the Qiskit migration for version {target-version}. This knowledge allows you to efficiently identify lines of code that need updating by mapping them to relevant, documented migration scenarios.
 
 Tasks:
-  - Obtain a table with the different scenarios to migrate for version >=**{target-version}**
+  1. Obtain a table with the different scenarios to migrate for version >={target-version}
+  2. Obtain a resulting code snippet equivalent to the one entered but adapted to version >={target-version}. This Python fragment should be a compilation of all the refactorings suggested in the table, maintaining the functionality, context and structure of the original code.
 
 ## **Output Table Format:**  
   | Line | Code | Scenario | Reference | Artifact | Refactoring |   
