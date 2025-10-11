@@ -4,5 +4,5 @@ Analyze the **Qiskit code snippet** in python below for qiskit version: <=**{tar
 
 **Qiskit code snippet:**  
 ```python  
-{qiskit_snippet}
+{qiskit-snippet}
 ```
