@@ -8,11 +8,11 @@ Tasks:
   1. Obtain a table with the different scenarios to migrate for version >={target-version}
   2. Obtain a resulting code snippet equivalent to the one entered but adapted to version >={target-version}. This Python fragment should be a compilation of all the refactorings suggested in the table, maintaining the functionality, context and structure of the original code.
 
-## **Output Table Format:**  
+## **Output Table Format**  
   | Line | Code | Scenario | Reference | Artifact | Refactoring |   
   | :--: | :--- | :------- | :-------: | :------- | :---------- | 
 
-## **Columns Descriptions:** 
+## **Columns Descriptions** 
   1. **Line:** snippet code line number.
   2. **Code:** the exact line of code being analyzed.
   3. **Scenario:** A brief description of the change, combining the taxonomy's "Type" and "Summary" (e.g., `Deprecation -> The function_name() function is deprecated`). If the upgrade is not mandatory for the target version, add `(optional)`.
@@ -20,7 +20,7 @@ Tasks:
   5. **Artifact:** a name representing the associated artifact, module, function, or parameter.
   6. **Refactoring:** recommended update for versions >=**{target-version}**, keep it empty if you are not sure or it does not fit.
    
-  **Example of a row in the table:**    
+  **Example of a row in the table**    
 | 5 | `from qiskit.module import submodule` | Deprecation -> function_name() function_name deprecated | 02c83a5a-c28d-46c6-acc2-4db931c4c15a | qiskit.module | `from qiskit import submodule` | 
 
 ## **Core Objective & Constraints**
@@ -30,7 +30,7 @@ Your primary goal is to generate a Markdown analysis table for a given code. You
   3. **Output Purity**: The final output must be only the **Markdown table**. No explanations, greetings, or conversational text are allowed, always generate the**Markdown table**.
 
 
-## **Refactoring Precision and critical rules:**
+## **Refactoring Precision and critical rules**
    - If the provided code is perfectly compatible in the version **{target-version}**, the requested markdown table should be empty containing only headers and outside of it, add only the description: “code fully compatible with version {target_version}”.
    - Ensure suggestions match the artifact’s migration path (e.g., `plot_anything` → `plot_anything`).
    - For clarity, in the refactored code you can omit Python comments, which begin with “#”.
