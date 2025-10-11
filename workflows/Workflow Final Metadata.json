@@ -147,8 +147,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4672,
-        336
+        4640,
+        448
       ],
       "id": "b5f8aa4c-9d9f-4607-b582-1f9aedcd67f3",
       "name": "Target Folder"
@@ -507,7 +507,7 @@
     {
       "parameters": {
         "content": "# Chatbot",
-        "height": 720,
+        "height": 864,
         "width": 736,
         "color": 5
       },
@@ -523,8 +523,8 @@
     {
       "parameters": {
         "content": "# Files Upload",
-        "height": 720,
-        "width": 496,
+        "height": 864,
+        "width": 608,
         "color": 7
       },
       "type": "n8n-nodes-base.stickyNote",
@@ -567,15 +567,15 @@
     {
       "parameters": {
         "content": "# Preprosesing Mode Only (Deprecated)",
-        "height": 528,
-        "width": 768,
+        "height": 592,
+        "width": 736,
         "color": 6
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         3616,
-        944
+        1120
       ],
       "id": "e5a00b6e-6fc1-497b-ba53-5644036511cd",
       "name": "Sticky Note7"
@@ -587,8 +587,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        3712,
-        1296
+        3696,
+        1504
       ],
       "id": "d4fead7b-1ec4-4b95-bcc7-6a3e568b1151",
       "name": "Google Gemini Chat Model"
@@ -602,8 +602,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
       "position": [
-        3664,
-        1056
+        3696,
+        1248
       ],
       "id": "e93d7f0a-e2dd-4fa2-9267-521960caa8e3",
       "name": "AI Agent1"
@@ -616,7 +616,7 @@
       "typeVersion": 2,
       "position": [
         3984,
-        1136
+        1392
       ],
       "id": "5ad447f1-129c-49df-a249-b2490a7305b2",
       "name": "Code"
@@ -629,7 +629,7 @@
       "typeVersion": 3,
       "position": [
         4176,
-        1248
+        1456
       ],
       "id": "ef8001ae-0372-474d-933a-a277e6af7cb0",
       "name": "Pedro"
@@ -654,7 +654,7 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        4720,
+        4816,
         688
       ],
       "id": "0a033fa6-a742-4ea5-9e28-92a3556838ee",
@@ -1197,13 +1197,13 @@
     },
     {
       "parameters": {
-        "jsCode": "// Recopilar todos los parámetros globales\nconst globals = $('Globals').first().json;\nconst timestamp = $('Global TimeStamp').first().json.global_timestamp;\n\n// Crear path base usando la misma lógica que Target Folder\nconst modelName = globals['chat-bot-model'] || 'unknown-model';\nconst answersPath = globals['repo-github']['answers-path'] || '';\nconst baseDirectory = `${answersPath}${timestamp}-${modelName}/`;\n\n// Crear objeto de metadatos\nconst metadata = {\n  experiment: {\n    timestamp: timestamp,\n    model: modelName,\n    version: globals['target-version'],\n    execution_id: timestamp\n  },\n  configuration: {\n    rag_chatbot_step: globals.rag_chatbot_step,\n    is_restricted: globals.is_restricted,\n    no_refactoring_chatbot_step: globals.no_refactoring_chatbot_step,\n    only_qrn_for_data_ingestion: globals.only_qrn_for_data_ingestion\n  },\n  github: {\n    owner: globals['repo-github'].owner,\n    repository: globals['repo-github'].name,\n    paths: {\n      data_ingestion: globals['repo-github']['data-ingestion-path'],\n      data_rag_chatbot: globals['repo-github']['data-rag-chatbot-path'],\n      snippets: globals['repo-github']['snippets-path'],\n      prompts: globals['repo-github']['prompts-path'],\n      answers: globals['repo-github']['answers-path']\n    }\n  },\n  models: {\n    chat_model: globals['chat-bot-model'],\n    embedding_model: \"nomic-embed-text:v1.5\",\n    database: globals['database-knowledge-name'],\n    qdrant_collection: globals['qdrant-collection']\n  },\n  files: {\n    user_prompt_file: globals.user_prompt_file,\n    system_prompt_file: globals.system_prompt_file,\n    taxonomy_filename: globals['taxonomy-filename']\n  },\n  execution_parameters: {\n    target_repo_url: globals['target-repo-url'],\n    embedding_batch_size: 50,\n    breakpoint_threshold: 0.65,\n    chunk_overlap: 100\n  }\n};\n\n// Crear el item para el archivo de metadata\nconst newItem = {\n  json: {\n    file_name: \"metadata.json\",\n    path: baseDirectory,\n    result: JSON.stringify(metadata, null, 2)\n  }\n};\n\n// Retornar como array con un solo item\nreturn [newItem];"
+        "jsCode": "// Recopilar todos los parámetros globales\nconst globals = $('Globals').first().json;\n// Usar el timestamp global que viene del nodo anterior (en lugar de generar uno nuevo)\nconst timeStamp = $('Global TimeStamp').first().json.global_timestamp;\nif (!timeStamp) {\n  throw new Error('No se encontró el timestamp global');\n}\n\n// Crear path base usando la misma lógica que Target Folder\nconst modelName = globals['chat-bot-model'] || 'unknown-model';\nconst answersPath = globals['repo-github']['answers-path'] || '';\nconst baseDirectory = `${answersPath}${timeStamp}-${modelName}/`;\n\n// Crear objeto de metadatos\nconst metadata = {\n  experiment: {\n    timestamp: timeStamp,\n    model: modelName,\n    version: globals['target-version'],\n    execution_id: timeStamp\n  },\n  configuration: {\n    rag_chatbot_step: globals.rag_chatbot_step,\n    is_restricted: globals.is_restricted,\n    no_refactoring_chatbot_step: globals.no_refactoring_chatbot_step,\n    only_qrn_for_data_ingestion: globals.only_qrn_for_data_ingestion\n  },\n  github: {\n    owner: globals['repo-github'].owner,\n    repository: globals['repo-github'].name,\n    paths: {\n      data_ingestion: globals['repo-github']['data-ingestion-path'],\n      data_rag_chatbot: globals['repo-github']['data-rag-chatbot-path'],\n      snippets: globals['repo-github']['snippets-path'],\n      prompts: globals['repo-github']['prompts-path'],\n      answers: globals['repo-github']['answers-path']\n    }\n  },\n  models: {\n    chat_model: globals['chat-bot-model'],\n    embedding_model: \"nomic-embed-text:v1.5\",\n    database: globals['database-knowledge-name'],\n    qdrant_collection: globals['qdrant-collection']\n  },\n  files: {\n    user_prompt_file: globals.user_prompt_file,\n    system_prompt_file: globals.system_prompt_file,\n    taxonomy_filename: globals['taxonomy-filename']\n  },\n  execution_parameters: {\n    target_repo_url: globals['target-repo-url'],\n    embedding_batch_size: 50,\n    breakpoint_threshold: 0.65,\n    chunk_overlap: 100\n  }\n};\n\n// Crear el item para el archivo de metadata\nconst newItem = {\n  json: {\n    file_name: \"metadata.json\",\n    path: baseDirectory,\n    result: JSON.stringify(metadata, null, 2)\n  }\n};\n\n// Retornar como array con un solo item\nreturn [newItem];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4464,
-        688
+        4640,
+        592
       ],
       "id": "45ffdb7d-daf3-4c08-9cf5-eb03cc6224ec",
       "name": "Generate Metadata"
@@ -1249,6 +1249,11 @@
         [
           {
             "node": "Naming",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Generate Metadata",
             "type": "main",
             "index": 0
           }
@@ -1676,7 +1681,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "13ae2f80-056c-43d1-a89f-f182f8b0aad5",
+  "versionId": "6652187f-4bea-46a8-aded-1b3c6b56c0e2",
   "meta": {
     "instanceId": "558d88703fb65b2d0e44613bc35916258b0f0bf983c5d4730c00c424b77ca36a"
   },
