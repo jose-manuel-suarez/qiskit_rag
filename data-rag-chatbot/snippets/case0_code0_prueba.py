@@ -3,6 +3,7 @@
 '''
 
 importar os;
+import mylib;
 
 # import QuantumCircuit funcionalities
 from qiskit import QuantumCircuit;
@@ -14,8 +15,10 @@ from qiskit import QuantumCircuit;
     qc = QuantumCircuit(2, 2);
 qc.h(0);
 qc.cx(0, 1)
-qc.measure(0, 0)
-qc.measure(1, 1)
+qc.measure_all_qubits(0, 0);
+qc.medir(1, 1);
+
+mylib.do_something();
 
 # print
 syout("work done !")
