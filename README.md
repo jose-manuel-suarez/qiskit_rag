@@ -14,11 +14,11 @@
 [
 {
 "rag_chatbot_step": 
-false,
+true,
 "is_restricted": 
-true,
+false,
 "no_refactoring_chatbot_step": 
-true,
+false,
 "repo-github": 
 {
 "owner": 
@@ -39,19 +39,33 @@ true,
 "target-repo-url": 
 "https://github.com/",
 "target-version": 
-"0.46.0",
+"1.0.0",
 "only_qrn_for_data_ingestion": 
-true,
+false,
 "user_prompt_file": 
-"user_prompt.txt",
+"user_prompt.md",
 "system_prompt_file": 
-"system_prompt.txt",
+"system_prompt_free_w_qrn_w_tax.md",
 "chat-bot-model": 
-"ollama-gpt-oss-20b"
+"google-gemini-2.5-flash",
+"database-knowledge-name": 
+"Qdrant Vector Store",
+"qdrant-collection": 
+"rag_ddbb",
+"taxonomy-filename": 
+"tax_gpt_1.0.0.md",
+"validation_stage": 
+false,
+"selected-ai-agent": 
+"gemini"
 }
 ]
 ```
 
-| Parametro | Descripcion |
-|  :-  | :-  |
+| Parámetro | Descripción |
+| :-------  | :---------  |
 | rag_chatbot_step | Indica si la ejecución utilizará el bot para procesamiento de snippets o sólo carga de la BBDD de embeddings. |
+| is_restricted | Indica si el procesamiento incorpora o no a las notas de liberación Qiskit, la taxonomía automática de escenarios. |
+| no_refactoring_chatbot_step | Indica si el prompt incorpora solicitud de código adaptado o sólo los escenarios detectados. |
+| owner | Propietario del repositorio GitHub experimental. |
+| name | Nombre del proyecto GitHub. |
