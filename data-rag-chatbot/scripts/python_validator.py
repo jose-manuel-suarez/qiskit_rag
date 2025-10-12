@@ -72,16 +72,20 @@ def main():
     """Main execution function"""
     try:
         # Read input from stdin
-        input_data = sys.stdin.read()
+        input_data = sys.stdin.read().strip()
         
         if not input_data:
-            print(json.dumps({
-                'valid': False,
-                'error': 'No input data provided',
-                'method': 'external_script',
-                'details': {'no_input': True}
-            }))
-            sys.exit(1)
+            # Try to get from command line arguments
+            if len(sys.argv) > 1:
+                input_data = sys.argv[1]
+            else:
+                print(json.dumps({
+                    'valid': False,
+                    'error': 'No input data provided',
+                    'method': 'external_script',
+                    'details': {'no_input': True}
+                }))
+                sys.exit(1)
             
         # Parse JSON input
         data = json.loads(input_data)
