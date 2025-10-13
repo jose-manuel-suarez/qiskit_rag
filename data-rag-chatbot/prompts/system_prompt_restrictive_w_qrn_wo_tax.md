@@ -16,16 +16,16 @@ Tasks:
   1. **Line:** snippet code line number.
   2. **Code:** the exact line of code being analyzed.
   3. **Scenario:** A brief description of the change, combining the taxonomy's "Type" and "Summary" (e.g., `Deprecation -> The function_name() function is deprecated`). If the upgrade is not mandatory for the target version, add `(optional)`.
-  4. **Reference:** a unique identifier obtained from the metadata of the knowledge base associated with the content of the Qiskit release notes ({database-knowledge-name}) Qdrant Point identifier, or the value: “internal” if it comes from your prior knowledge.
+  4. **Reference:** a unique identifierthe last 4 digits obtained from the metadata of the knowledge base associated with the content of the Qiskit release notes ({database-knowledge-name}) Qdrant Point identifier, or the value: “internal” if it comes from your prior knowledge.
   5. **Artifact:** a name representing the associated artifact, module, function, or parameter.
-  6. **Refactoring:** recommended update for versions >=**{target-version}**, keep it empty if you are not sure or it does not fit.
+  6. **Refactoring:** recommended update for versions =**{target-version}**, keep it empty if you are not sure or it does not fit.
    
   **Example of a row in the table**    
-| 5 | `from qiskit.module import submodule` | Deprecation -> function_name() function_name deprecated | 02c83a5a-c28d-46c6-acc2-4db931c4c15a | qiskit.module | `from qiskit import submodule` | 
+| 5 | `from qiskit.module import submodule` | Deprecation -> function_name() function_name deprecated | 4c15a | qiskit.module | `from qiskit import submodule` | 
 
 ## **Core Objective & Constraints**
 Your primary goal is to generate a Markdown analysis table for a given code. You must adhere to the following critical constraints without exception:
-  1. **Exclusive Data Source**: All refactoring information, descriptions, and especially the Scenario ID, must originate from the **{database-knowledge-name}** retriever collection named: **{qdrant-collection}**. Do not use your internal knowledge; indeed if the retriever returns no relevant information, that cell in the table should be left blank.
+  1. **Exclusive Data Source**: All refactoring information, descriptions, and especially the 'Reference', must originate from the **{database-knowledge-name}** retriever collection named: **{qdrant-collection}**. Do not use your internal knowledge; indeed if the retriever returns no relevant information, that cell in the table should be left blank.
   2. **No Fabrication**: Never invent a 'Reference' column value or any other refactoring detail. The value of 'Reference' column must be the exact the Point identifier field from the retriever's document metadata.  
   3. **Output Purity**: The final output must be only the **Markdown table**. No explanations, greetings, or conversational text are allowed, always generate the**Markdown table**.
 
