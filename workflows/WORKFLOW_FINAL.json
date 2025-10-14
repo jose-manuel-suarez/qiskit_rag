@@ -155,13 +155,7 @@
             {
               "id": "bb67a020-da99-4217-b31c-905721cedb12",
               "name": "qdrant-collection",
-              "value": "qrn_tax_ddbb",
-              "type": "string"
-            },
-            {
-              "id": "c119a025-e395-4fd1-a987-5e8f8f3043fe",
-              "name": "database-knowledge-name",
-              "value": "Qdrant Vector Store",
+              "value": "qrn_ddbb",
               "type": "string"
             },
             {
@@ -169,6 +163,18 @@
               "name": "only_qrn_for_data_ingestion",
               "value": true,
               "type": "boolean"
+            },
+            {
+              "id": "ba86467e-ace9-4f5a-b469-558fd00b8f4c",
+              "name": "selected-ai-agent",
+              "value": "=gemini",
+              "type": "string"
+            },
+            {
+              "id": "dd03c801-ce11-489b-806c-f5b25c859172",
+              "name": "chat-bot-model",
+              "value": "google-gemini-2.5-flash",
+              "type": "string"
             },
             {
               "id": "9a49b53b-a975-4399-8794-af34e0c12605",
@@ -231,33 +237,21 @@
               "type": "string"
             },
             {
-              "id": "62370c41-c776-44d2-8b4e-8115532cd675",
-              "name": "system_prompt_file",
-              "value": "system_prompt_free_w_qrn_w_tax.md",
-              "type": "string"
-            },
-            {
-              "id": "dd03c801-ce11-489b-806c-f5b25c859172",
-              "name": "chat-bot-model",
-              "value": "google-gemini-2.5-flash",
-              "type": "string"
-            },
-            {
               "id": "7bc5dec5-6eac-4f78-bdbd-9d31f41331b7",
               "name": "taxonomy-filename",
               "value": "tax_gpt_1.0.0.md",
               "type": "string"
             },
             {
-              "id": "ba86467e-ace9-4f5a-b469-558fd00b8f4c",
-              "name": "selected-ai-agent",
-              "value": "=gemini",
-              "type": "string"
-            },
-            {
               "id": "c1f94134-d0af-4266-84af-13fe7c2a2cfe",
               "name": "experimental_mode",
               "value": "free",
+              "type": "string"
+            },
+            {
+              "id": "62370c41-c776-44d2-8b4e-8115532cd675",
+              "name": "system_prompt_file",
+              "value": "system_prompt_free_w_qrn_w_tax.md",
               "type": "string"
             },
             {
@@ -491,7 +485,7 @@
       "parameters": {
         "content": "# GitHub Repo Files Upload",
         "height": 1152,
-        "width": 1248,
+        "width": 1056,
         "color": 7
       },
       "type": "n8n-nodes-base.stickyNote",
@@ -551,7 +545,7 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        5456,
+        5264,
         944
       ],
       "id": "0a033fa6-a742-4ea5-9e28-92a3556838ee",
@@ -958,7 +952,7 @@
         "toolDescription": "Retrieve data from a semantic database to answer questions",
         "qdrantCollection": {
           "__rl": true,
-          "value": "{{ $('Prompts sistema y usuario y Filtrado BD').item.json.database_name }}",
+          "value": "={{ $('Globals').item.json['qdrant-collection'] }}",
           "mode": "id"
         },
         "topK": 10,
@@ -2041,7 +2035,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "5f41b791-27d0-4f80-a561-d6635b8143f7",
+  "versionId": "9c91dcaa-79a2-4e67-aab7-3fa3e19ee670",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "558d88703fb65b2d0e44613bc35916258b0f0bf983c5d4730c00c424b77ca36a"
