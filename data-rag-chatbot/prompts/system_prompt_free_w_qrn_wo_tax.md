@@ -16,12 +16,12 @@ Tasks:
   1. **Line:**: snippet code line number.
   2. **Code:**: the exact line of code being analyzed.
   3. **Scenario:**: A brief description of the change, combining the taxonomy's "Type" and "Summary" (e.g., `Deprecation -> The function_name() function is deprecated`). If the upgrade is not mandatory for the target version, add `(optional)`.
-  4. **Reference**: a unique identifier, the last 4 digits obtained from the metadata of the knowledge base associated with the content of the Qiskit release notes ({database-knowledge-name}) Qdrant Point identifier, or the value: “internal” if it comes from your prior knowledge.
+  4. **Reference**: a unique identifier, the last 4 digits obtained from the metadata of the Qdrant database data_retriever named: **{qdrant-database-name}** Qdrant Point identifier, or the value: 'Internal Knowledge' if it comes from your prior knowledge.
   5. **Artifact**: a name representing the associated artifact, module, function, or parameter.
   6. **Refactoring**: recommended update for versions =**{target-version}**, keep it empty if you are not sure or it does not fit.
    
   **Example of a row in the table**    
-| 5 | `from qiskit.module import submodule` | Deprecation -> function_name() function_name deprecated | 02c83a5a-c28d-46c6-acc2-4db931c4c15a | qiskit.module | `from qiskit import submodule` | 
+| 5 | `from qiskit.module import submodule` | Deprecation -> function_name() function_name deprecated | 4db9 | qiskit.module | `from qiskit import submodule` | 
 
 ## **Refactoring Precision and critical rules**
    - If the provided code is perfectly compatible in the version **{target-version}**, the requested markdown table should be empty containing only headers and outside of it, add only the description: “code fully compatible with version {target_version}”.
