@@ -1,7 +1,7 @@
-from qiskit import QuantumCircuit                                    # type: ignore
-from mylib import execute, getBackend                                # type: ignore
-from qiskit.tools.visualization import plot_histogram                   # type: ignore
-from qiskit.tools.monitor import job_monitor                        # type: ignore
+from qiskit import QuantumCircuit
+from mylib import execute, getBackend
+from qiskit.tools.visualization import plot_histogram
+from qiskit.tools.monitor import job_monitor
 import matplotlib.pyplot as plt
 
 qc = QuantumCircuit(2, 2)

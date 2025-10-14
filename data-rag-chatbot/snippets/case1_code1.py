@@ -1,7 +1,7 @@
 import os
-from qiskit import QuantumCircuit   # type: ignore
-from qiskit import Aer              # type: ignore
-from qiskit import qasm             # type: ignore
+from qiskit import QuantumCircuit
+from qiskit import Aer
+from qiskit import qasm
 from datetime import datetime
 
 qc = QuantumCircuit(2, 2)

@@ -1,6 +1,6 @@
-from qiskit import QuantumCircuit               # type: ignore
-from qiskit import qasm2 as qasm                # type: ignore
-from qiskit_aer import AerSimulator             # type: ignore
+from qiskit import QuantumCircuit
+from qiskit import qasm2 as qasm
+from qiskit_aer import AerSimulator
 
 qc = QuantumCircuit(2, 2)
 qc.h(0)

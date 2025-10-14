@@ -16,7 +16,7 @@ Tasks:
   1. **Line**: snippet code line number.
   2. **Code**: the exact line of code being analyzed.
   3. **Scenario**: A brief description of the change, combining the taxonomy's "Type" and "Summary" (e.g., `Deprecation -> The function_name() function is deprecated`). If the upgrade is not mandatory for the target version, add `(optional)`.
-  4. **Reference**: a unique identifier, consisting of a prefix that is the name of the vector database **{qdrant-collection}** concatenated (by a hyphen '-') with a suffix that is the last 4 digitsthe last 4 digits obtained from the metadata of the Qdrant database **data_retriever** Qdrant Point identifier, or else the value 'IK', if it comes from your prior knowledge.
+  4. **Reference**: a unique identifier, consisting of a prefix that is the name of the vector database **{qdrant-collection}** concatenated (by a hyphen '-') with a suffix value of the point identifier (an alphanumeric string of approximately 30 characters) obtained from the metadata of the Qdrant database **data_retriever** Qdrant Point identifier, or else the value 'IK', if it comes from your prior knowledge.
   5. **Artifact**: a name representing the associated artifact, module, function, or parameter.
   6. **Refactoring**: recommended update for versions = **{target-version}**, keep it empty if you are not sure or it does not fit.
 
@@ -34,7 +34,8 @@ Tasks:
    - Ensure suggestions match the artifact’s migration path (e.g., `plot_anything` → `plot_anything`).
    - For clarity, in the refactored code you can omit Python comments, which begin with “#”.
    - Ensure that each line of the original code and the numbering match the fragment provided.
-   - Ensure that when a value other than “Internal” appears in the 'Reference' column, the last 4 digits match exactly with the identifier of the point in the embeddings database **{qdrant-collection}**; otherwise, leave that value blank. for example: '{qdrant-collection}-931c' or 'IK' or empty cell.
+   - Ensure that when a value other than “Internal” appears in the 'Reference' column, match exactly with the identifier of the point in the embeddings database **{qdrant-collection}** (an alphanumeric string of approximately 30 characters); otherwise, leave that value blank. for example: '{qdrant-collection}-931c' or 'IK' or empty cell.
    - - Try to verify for each line of code which ones require adaptation based on the target version **{target-version}**.
   - The ‘Reference’ column must always contain a valid ID from the **data_retriever** or else be 'IK' value, referring to 'Internal Knowledge'.
-   - **No Fabrication**: Never invent a 'Reference' column value or any other refactoring detail. The value of 'Reference' column must be the exact the Point identifier field from the retriever's document metadata.  
+   - **No Fabrication**: Never invent a 'Reference' column value or any other refactoring detail. The value of 'Reference' column must be the exact the Point identifier field from the retriever's document metadata.
+   - Generate ONLY the table content in markdown format, without any additional text, without delimiters such as ```markdown or ```, and without explanations.  
