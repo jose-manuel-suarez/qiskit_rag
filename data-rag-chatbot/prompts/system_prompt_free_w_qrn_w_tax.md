@@ -16,9 +16,9 @@ Tasks:
   1. **Line**: snippet code line number.
   2. **Code**: the exact line of code being analyzed.
   3. **Scenario**: A brief description of the change, combining the taxonomy's "Type" and "Summary" (e.g., `Deprecation -> The function_name() function is deprecated`). If the upgrade is not mandatory for the target version, add `(optional)`.
-  4. **Reference**: a unique identifier, the last 4 digits obtained from the metadata of the Qdrant database data_retriever named: **{qdrant-database-name}** Qdrant Point identifier, or the value: 'Internal Knowledge' if it comes from your prior knowledge.
-  5. **Artifact**: a name representing the associated artifact, module, function, or parameter.
-  6. **Refactoring**: recommended update for versions = **{target-version}**, keep it empty if you are not sure or it does not fit.
+  4. **Reference**: a unique identifier, consisting of a prefix that is the name of the vector database **{qdrant-collection}** concatenated (by a hyphen '-') with a suffix that is the last 4 digitsthe last 4 digits obtained from the metadata of the Qdrant database **data_retriever** named: **{database-knowledge-name}** Qdrant Point identifier, or the value: 'Internal Knowledge' if it comes from your prior knowledge.
+  4. **Artifact**: a name representing the associated artifact, module, function, or parameter.
+  5. **Refactoring**: recommended update for versions = **{target-version}**, keep it empty if you are not sure or it does not fit.
 
 ## **Mapping rules**
   - Try to verify for each line of code which ones require adaptation based on the target version **{target-version}**.
@@ -28,8 +28,8 @@ Tasks:
   - The ‘Reference’ column must always contain a valid ID from the data_retriever, and otherwise be 'Internal Knowledge'.
 
 **Example of a row in the table**
-| 5 | `from qiskit.module import submodule` | Deprecation -> function_name() function_name deprecated | c15a | qiskit.module | `from qiskit import submodule` | 
-| 8 | `from qiskit.module import submodule` | Updated -> function_name() function_name | 931c | qiskit.module | `from qiskit import submodule` |
+| 5 | `from qiskit.module import submodule` | Deprecation -> function_name() function_name deprecated | qrn_ddbb-c15a | qiskit.module | `from qiskit import submodule` | 
+| 8 | `from qiskit.module import submodule` | Updated -> function_name() function_name | qrn_tax_ddbb-931c | qiskit.module | `from qiskit import submodule` |
 
 ## **Refactoring Precision and critical rules**
    - If the provided code is perfectly compatible in the version **{target-version}**, the requested markdown table should be empty containing only headers and outside of it, add only the description: “code fully compatible with version {target_version}”.
