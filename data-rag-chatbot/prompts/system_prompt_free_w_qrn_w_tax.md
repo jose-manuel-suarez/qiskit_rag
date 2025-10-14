@@ -16,17 +16,17 @@ Tasks:
   1. **Line**: snippet code line number.
   2. **Code**: the exact line of code being analyzed.
   3. **Scenario**: A brief description of the change, combining the taxonomy's "Type" and "Summary" (e.g., `Deprecation -> The function_name() function is deprecated`). If the upgrade is not mandatory for the target version, add `(optional)`.
-  4. **Reference**: a unique identifier, consisting of a prefix that is the name of the vector database **{qdrant-collection}** concatenated (by a hyphen '-') with a suffix that is the last 4 digitsthe last 4 digits obtained from the metadata of the Qdrant database **data_retriever** Qdrant Point identifier, or the value: 'Internal Knowledge' if it comes from your prior knowledge.
+  4. **Reference**: a unique identifier, consisting of a prefix that is the name of the vector database **{qdrant-collection}** concatenated (by a hyphen '-') with a suffix that is the last 4 digitsthe last 4 digits obtained from the metadata of the Qdrant database **data_retriever** Qdrant Point identifier, or the value: 'IK' if it comes from your prior knowledge.
   5. **Artifact**: a name representing the associated artifact, module, function, or parameter.
   6. **Refactoring**: recommended update for versions = **{target-version}**, keep it empty if you are not sure or it does not fit.
 
 ## **Mapping rules**
   - Try to verify for each line of code which ones require adaptation based on the target version **{target-version}**.
-  - The ‘Reference’ column must always contain a valid ID from the **data_retriever**, and otherwise be 'Internal' value.
+  - The ‘Reference’ column must always contain a valid ID from the **data_retriever**, and otherwise be 'IK' value, referring to 'Internal Knowledge'.
 
 **Example of a row in the table**
 | 5 | `from qiskit.module import submodule` | Deprecation -> function_name() function_name deprecated | {qdrant-collection}-c15a | qiskit.module | `from qiskit import submodule` | 
-| 8 | `from qiskit.module import submodule` | Updated -> function_name() function_name | Internal | qiskit.module | `from qiskit import submodule` |
+| 8 | `from qiskit.module import submodule` | Updated -> function_name() function_name | IK | qiskit.module | `from qiskit import submodule` |
 | 14 | `from qiskit.module import submodule` | new library -> new_function_name() function_name | {qdrant-collection}-931c | qiskit.module | `from qiskit import submodule` |
 
 ## **Refactoring Precision and critical rules**
@@ -35,3 +35,4 @@ Tasks:
    - For clarity, in the refactored code you can omit Python comments, which begin with “#”.
    - If the provided code is already fully compatible with the target version, state this clearly in your response, explaining that no changes are required.
    - Ensure that each line of the original code and the numbering match the fragment provided.
+   - Ensure that when a value other than “Internal” appears in the 'Reference' column, the last 4 digits match exactly with the identifier of the point in the embeddings database **{qdrant-collection}**; otherwise, leave that value blank. for example: '{qdrant-collection}-931c' or 'IK' or empty cell.
