@@ -7,65 +7,38 @@
 ### Modelo de Embeddings
 
    - Actualmente utilizamos ollama:nomic-embed-text:v1.5
+  
+### Etapas experimentales
+
+   - Consideramos los siguientes modelos de prueba:
+     - Ollama GPT-oss20B (local)
+     - OpenAI ChatGPT-4.0 / ChatGPT-4.1
+     - DeepSeek v3 (no sabemos si podremos probar desde n8n)
+     - Google Gemini Flash-2.5 
 
 ### Parametrizaciones
 
-```python
-[
-{
-"rag_chatbot_step": 
-true,
-"is_restricted": 
-false,
-"no_refactoring_chatbot_step": 
-false,
-"repo-github": 
-{
-"owner": 
-"jose-manuel-suarez",
-"name": 
-"qiskit_rag",
-"data-ingestion-path": 
-"data-ingestion/",
-"data-rag-chatbot-path": 
-"data-rag-chatbot/",
-"snippets-path": 
-"data-rag-chatbot/snippets/",
-"prompts-path": 
-"data-rag-chatbot/prompts/",
-"answers-path": 
-"answers/"
-},
-"target-repo-url": 
-"https://github.com/",
-"target-version": 
-"1.0.0",
-"only_qrn_for_data_ingestion": 
-false,
-"user_prompt_file": 
-"user_prompt.md",
-"system_prompt_file": 
-"system_prompt_free_w_qrn_w_tax.md",
-"chat-bot-model": 
-"google-gemini-2.5-flash",
-"database-knowledge-name": 
-"Qdrant Vector Store",
-"qdrant-collection": 
-"rag_ddbb",
-"taxonomy-filename": 
-"tax_gpt_1.0.0.md",
-"validation_stage": 
-false,
-"selected-ai-agent": 
-"gemini"
-}
-]
-```
-
-| Parámetro | Descripción |
-| :-------  | :---------  |
-| rag_chatbot_step | Indica si la ejecución utilizará el bot para procesamiento de snippets o sólo carga de la BBDD de embeddings. |
-| is_restricted | Indica si el procesamiento incorpora o no a las notas de liberación Qiskit, la taxonomía automática de escenarios. |
-| no_refactoring_chatbot_step | Indica si el prompt incorpora solicitud de código adaptado o sólo los escenarios detectados. |
-| owner | Propietario del repositorio GitHub experimental. |
-| name | Nombre del proyecto GitHub. |
+| Parámetro |    | Descripción |
+| :-------  | :- | :---------  |
+| rag_chatbot_step || Indica si la ejecución utilizará el bot para procesamiento de snippets o sólo carga de la BBDD de embeddings. |
+| is_restricted || Indica si el procesamiento incorpora o no a las notas de liberación Qiskit, la taxonomía automática de escenarios. |
+| no_refactoring_chatbot_step || Indica si el prompt incorpora solicitud de código adaptado o sólo los escenarios detectados. |
+| repo-github || Parametrizaciones asociados al repositorio remoto. |
+| | owner | Propietario del repositorio GitHub experimental. |
+| | name | Nombre del proyecto GitHub. |
+| | data-ingestion-path | Directorio de ingesta de datos. |
+| | data-rag-chatbot-path | Directorio de fuentes de datos para el modelo. |
+| | snippets-path | Directorio de fragmentos de código python para pruebas. |
+| | prompts-path | Directorio de solicitudes para el modelo (usuario y sistema). |
+| | answers-path | Directorio de archivos resultantes para cada prueba. |
+| target-repo-url | | Url base del repositorio web del proyecto. |
+| target-version | | |
+| only_qrn_for_data_ingestion | | |
+| | | |
+| | | |
+| | | |
+| | | |
+| | | |
+| | | |
+| | | |
+| selected-ai-agent | | Indica el agente AI a utilizar (valores posibles: 'gemini' / 'ollama' / 'openai' ) |
