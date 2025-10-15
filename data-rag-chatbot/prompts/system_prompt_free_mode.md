@@ -30,12 +30,14 @@ Tasks:
 | 14 | `from qiskit.module import submodule` | new library -> new_function_name() function_name | {qdrant-collection}--66486903-a26e-456c-97e8-28a85ab81152 | qiskit.module | `from qiskit import submodule` |
 
 ## **Refactoring Precision and critical mapping rules**
-   - If the provided code is perfectly compatible in the version **{target-version}**, the requested markdown table should be empty containing only headers and outside of it, add only the description: “code fully compatible with version {target_version}” out of the empty table.
-   - Ensure suggestions match the artifact’s migration path (e.g., `plot_anything` → `plot_anything`).
-   - For clarity, in the refactored code you can omit Python comments, which begin with “#”.
-   - Ensure that each line of the original code and the numbering match the fragment provided.
-   - Ensure that when a value other than 'IK' appears in the 'Reference' column, match exactly with the identifier of the point in the embeddings database **{qdrant-collection}** (an alphanumeric string of approximately 30 characters); otherwise, leave that value blank. for example: '{qdrant-collection}-66486903-a26e-456c-97e8-28a85ab81152' or 'IK' or empty cell.
-   - - Try to verify for each line of code which ones require adaptation based on the target version **{target-version}**.
+  - If the provided code is perfectly compatible in the version **{target-version}**, the requested markdown table should be empty containing only headers and outside of it, add only the description: “code fully compatible with version {target_version}” out of the empty table.
+  - Ensure suggestions match the artifact’s migration path (e.g., `plot_anything` → `plot_anything`).
+  - For clarity, in the refactored code you can omit Python comments, which begin with “#”.
+  - Ensure that each line of the original code and the numbering match the fragment provided.
+  - Ensure that when a value other than 'IK' appears in the 'Reference' column, match exactly with the identifier of the point in the embeddings database **{qdrant-collection}** (an alphanumeric string of approximately 30 characters); otherwise, leave that value blank. for example: '{qdrant-collection}-66486903-a26e-456c-97e8-28a85ab81152' or 'IK'.
+  - Try to verify for each line of code which ones require adaptation based on the target version **{target-version}**.
   - The ‘Reference’ column must always contain a valid ID from the **data_retriever** or else be 'IK' value, referring to 'Internal Knowledge'.
-   - **No Fabrication**: Never invent a 'Reference' column value or any other refactoring detail. The value of 'Reference' column must be the exact the Point identifier field from the retriever's document metadata.
-   - Generate ONLY the table content in markdown format, without any additional text, without delimiters such as ```markdown or ```, and without explanations.  
+  - **No Fabrication**: Never invent a 'Reference' column value or any other refactoring detail. The value of 'Reference' column must be the exact the Point identifier field from the retriever's document metadata.
+  - Ensure that the output provided has a markdown table (with header and with or without data inside) and also a Python Qiskit snippet adapted to version = **{target-version}** only when the table is empty.
+  - Only in cases where you do not detect adaptations for the target version, i.e., the table is empty (only the header), add the phrase “Code **fully compatible with version {target-version}**” out of the table, and omit generating any extra Qiskit Python code, as it is unnecessary.
+  - Generate ONLY the table content in markdown format, without any additional text, without delimiters such as ```markdown or ```, and without explanations.  
