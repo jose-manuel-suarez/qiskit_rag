@@ -8,10 +8,10 @@ datos = [
     [91, 9], [94, 5]    # Modo Restrictivo
 ]
 
-modelos = ['Gemini', 'GPT-OSS', 'Gemini', 'GPT-OSS']
+modelos = ['Google Gemini Flash-2.5', 'OpenAI GPT-OSS-20b', 'Google Gemini Flash-2.5', 'OpenAI GPT-OSS-20b']
 modos = ['Modo Libre', 'Modo Libre', 'Modo Restrictivo', 'Modo Restrictivo']
 etiquetas = ['Taxonomía', 'Conocimiento Interno']
-colores = ['#87CEEB', '#FFA500']  # Celeste y Naranja
+colores = ["#63B9DB", "#E2A127"]  # Celeste y Naranja
 
 # Crear la figura con 4 subgráficos (2x2)
 fig, axs = plt.subplots(2, 2, figsize=(10, 10))
