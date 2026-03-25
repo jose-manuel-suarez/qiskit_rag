@@ -31,7 +31,7 @@ def crear_tortas_en_eje(ax, datos_modelos, titulo):
             autopct='%1.1f%%',
             startangle=90,  # Fijo a 90 para que empiece a las 12 en punto
             colors=colores,
-            textprops={'color': 'white', 'weight': 'bold', 'fontsize': 12},
+            textprops={'color': 'white', 'fontsize': 12},
             pctdistance=0.6,  # Ajustado para que quede fuera de la circunferencia
             labeldistance=1.1,
             wedgeprops={
@@ -47,7 +47,6 @@ def crear_tortas_en_eje(ax, datos_modelos, titulo):
         # Personalizar porcentajes - centrados y en blanco
         for autotext in autotexts:
             autotext.set_fontsize(12)
-            autotext.set_fontweight('bold')
             autotext.set_color('white')
             autotext.set_bbox(None)  # Sin fondo
             
@@ -64,7 +63,7 @@ def crear_tortas_en_eje(ax, datos_modelos, titulo):
             text.set_visible(False)
         
         # Título del modelo debajo de cada torta
-        eje.set_title(modelos[i], y=-0.2, fontsize=12, fontweight='bold', color='#2C3E50')
+        eje.set_title(modelos[i], y=-0.2, fontsize=12, color='#2C3E50')
         
         # Ocultar bordes
         for spine in eje.spines.values():
@@ -74,9 +73,7 @@ def crear_tortas_en_eje(ax, datos_modelos, titulo):
         eje.set_aspect('equal')
     
     # Título del modo en la parte superior
-    ax.text(0.5, 0.95, titulo, transform=ax.transAxes,
-            fontsize=16, fontweight='bold', ha='center', va='top',
-            color='#2C3E50')
+    ax.text(0.5, 0.95, titulo, transform=ax.transAxes, fontsize=16, ha='center', va='top',color='#2C3E50')
     
     # Ocultar los ejes principales
     ax.axis('off')
@@ -91,7 +88,7 @@ wedges_restrictivo = crear_tortas_en_eje(ax_restrictivo, datos_restrictivo, 'Mod
 
 # Referencias en la parte superior centrada
 fig.text(0.5, 0.98, 'Distribución de Escenarios según Origen de la Respuesta',
-         fontsize=18, fontweight='bold', ha='center', va='top', color='#2C3E50')
+         fontsize=18, ha='center', va='top', color='#2C3E50')
 
 # Leyenda en la parte superior con estilo profesional
 fig.legend(wedges_libre, etiquetas, loc='upper center', ncol=2, fontsize=13,
