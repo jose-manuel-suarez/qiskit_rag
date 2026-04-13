@@ -10,7 +10,7 @@ def get_icon(path, zoom=0.025):
     except:
         return None
 
-# Load icons (Asegúrate de tener estos archivos en tu directorio)
+# Load icons
 icon_gpt = get_icon("logo_gpt.png")
 icon_gemini = get_icon("logo_gemini.png")
 
@@ -32,6 +32,7 @@ colores_cat = {
     'Perfect P': ("#bbdcff", "#125da8"), 'Global P': ("#b692d8", "#671e9b")
 }
 
+# Definición de colores para modelos
 color_gpt, color_gemini = "#4A4A4A", "#E5E5E5"
 
 fig, axes = plt.subplots(1, 6, figsize=(25, 8), sharey=False)
@@ -49,25 +50,29 @@ for i, (categoria, ax) in enumerate(zip(categorias, axes)):
     avg_prev = (gpt_data[i][0] + gpt_data[i][1]) / 2
     avg_gpt = (gpt_data[i][2] + gpt_data[i][3]) / 2
     avg_gem = (gemini_data[i][2] + gemini_data[i][3]) / 2
+    avg_models_total = (gpt_data[i][2] + gpt_data[i][3] + gemini_data[i][2] + gemini_data[i][3]) / 4
 
-    # 1. Línea promedio barras izquierda (Color idéntico a las barras)
-    ax.axhline(y=avg_prev, color=colores_cat[categoria][1], linestyle='--', linewidth=1.5, alpha=0.7)
+    # 1. Línea promedio etapa previa (Continua y ancha)
+    ax.axhline(y=avg_prev, color=colores_cat[categoria][1], linestyle='-', linewidth=2, alpha=0.8)
     
-    # 2. Línea promedio GPT (Gris oscuro)
-    ax.axhline(y=avg_gpt, color=color_gpt, linestyle='--', linewidth=1.5, alpha=0.8)
+    # 2. Línea promedio GPT (Mismo color que barra GPT, punteada)
+    ax.axhline(y=avg_gpt, color=color_gpt, linestyle='--', linewidth=1.2, alpha=0.8)
     
-    # 3. Línea promedio Gemini (Gris claro/medio para visibilidad)
-    ax.axhline(y=avg_gem, color="#A0A0A0", linestyle='--', linewidth=1.5, alpha=0.8)
+    # 3. Línea promedio Gemini (Mismo color que barra Gemini, punteada)
+    ax.axhline(y=avg_gem, color=color_gemini, linestyle='--', linewidth=1.2, alpha=0.8)
 
-    # Configuración de leyenda (solo en el primer subplot para evitar duplicados)
+    # 4. Línea promedio Total Modelos (Negra continua y ancha)
+    ax.axhline(y=avg_models_total, color="black", linestyle='-', linewidth=2, alpha=0.9)
+
+    # Configuración de leyenda
     if i == 0:
-        handles.append(plt.Line2D([0], [0], color='#666666', linestyle='--', label='Prev. Average'))
+        handles.append(plt.Line2D([0], [0], color='#666666', linestyle='-', linewidth=2, label='Prev. Average'))
+        handles.append(plt.Line2D([0], [0], color="black", linestyle='-', linewidth=2, label='Models Average'))
         handles.append(plt.Line2D([0], [0], color=color_gpt, linestyle='--', label='GPT Average'))
-        handles.append(plt.Line2D([0], [0], color="#A0A0A0", linestyle='--', label='Gemini Average'))
-        labels.extend(['Prev. Average', 'GPT Average', 'Gemini Average'])
+        handles.append(plt.Line2D([0], [0], color=color_gemini, linestyle='--', label='Gemini Average'))
+        labels.extend(['Prev. Average', 'Models Average', 'GPT Average', 'Gemini Average'])
 
     # --- DIBUJO DE BARRAS ---
-    # Barras rayadas (Etapa previa)
     for j in [0, 1]:
         val = gpt_data[i][j] 
         ax.bar(x[j], val, w_previa, facecolor=colores_cat[categoria][0], 
@@ -79,10 +84,8 @@ for i, (categoria, ax) in enumerate(zip(categorias, axes)):
         handles.append(patch_prev)
         labels.append('Previous stage')
 
-    # Barras comparativas con Iconos
     for j in [2, 3]:
         p_gpt, p_gem = x[j] - w_comp/2, x[j] + w_comp/2
-        
         bar_gpt = ax.bar(p_gpt, gpt_data[i][j], w_comp, color=color_gpt, edgecolor='black')
         bar_gem = ax.bar(p_gem, gemini_data[i][j], w_comp, color=color_gemini, edgecolor='black')
         
@@ -104,17 +107,14 @@ for i, (categoria, ax) in enumerate(zip(categorias, axes)):
     ax.set_ylim(0, max(gpt_data[i].max(), gemini_data[i].max()) + 25)
     ax.grid(True, alpha=0.15, axis='y')
 
-# LEYENDA SUPERIOR
 fig.legend(handles, labels, 
            loc='upper center', 
            bbox_to_anchor=(0.5, 0.94), 
-           ncol=len(handles), 
+           ncol=4, 
            fontsize=10, 
            frameon=True, 
            handlelength=2.5, 
-           handleheight=1.2, 
-           columnspacing=1.2, # Controla el espacio entre cada etiqueta
-           borderaxespad=0.)
+           columnspacing=1.2)
 
 plt.suptitle('Metrics Comparison by Category', fontsize=20, fontweight='bold', y=0.98)
 plt.subplots_adjust(top=0.75, bottom=0.15, wspace=0.3, left=0.05, right=0.95)
